@@ -410,7 +410,7 @@ function Vec3Editor({
   onChange: (v: Vec3) => void
 }) {
   const v = value || [0, 0, 0]
-  const colors = ['#e94560', '#4ecdc4', '#5c7cfa']
+  const colors = ['#ef4444', '#22c55e', '#3b82f6']
   const labels = ['X', 'Y', 'Z']
 
   const update = (idx: number, val: number) => {

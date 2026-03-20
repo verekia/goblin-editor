@@ -51,8 +51,8 @@ export default function ThreeViewport({ state, dispatch }: ViewportProps) {
 
     // Scene
     scene = new THREE.Scene()
-    scene.background = new THREE.Color('#1a1a2e')
-    scene.fog = new THREE.FogExp2('#1a1a2e', 0.008)
+    scene.background = new THREE.Color('#111113')
+    scene.fog = new THREE.FogExp2('#111113', 0.008)
 
     // Camera
     camera = new THREE.PerspectiveCamera(50, 1, 0.1, 500)
@@ -291,8 +291,8 @@ export default function ThreeViewport({ state, dispatch }: ViewportProps) {
       gridHelper = new THREE.GridHelper(
         sceneDef.stage.grid.size,
         sceneDef.stage.grid.divisions,
-        '#444466',
-        '#333355'
+        '#333336',
+        '#222225'
       )
       gridHelper.material.opacity = 0.3
       ;(gridHelper.material as THREE.Material).transparent = true
@@ -606,7 +606,7 @@ function updateSelectionHighlight(obj: THREE.Object3D, selected: boolean) {
         const edges = new THREE.EdgesGeometry(child.geometry)
         const line = new THREE.LineSegments(
           edges,
-          new THREE.LineBasicMaterial({ color: '#ffcc00', linewidth: 2 })
+          new THREE.LineBasicMaterial({ color: '#ffffff', linewidth: 2 })
         )
         line.userData.isSelectionHighlight = true
         line.renderOrder = 999
