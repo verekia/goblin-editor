@@ -111,12 +111,6 @@ export default function TopBar({ state, dispatch, onSave }: TopBarProps) {
         >
           Stage
         </button>
-        <button
-          className="topbar-btn accent"
-          onClick={() => dispatch({ type: "TOGGLE_EXPORT_DIALOG" })}
-        >
-          Export
-        </button>
       </div>
     </div>
   );

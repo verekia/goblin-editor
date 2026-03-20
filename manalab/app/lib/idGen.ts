@@ -1,7 +1,3 @@
-let counter = 0
-
 export function generateId(): string {
-  counter++
-  const rand = Math.random().toString(36).substring(2, 8)
-  return `e_${rand}${counter}`
+  return `e_${crypto.randomUUID().replace(/-/g, '').slice(0, 12)}`
 }

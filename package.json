@@ -1,4 +1,10 @@
 {
   "private": true,
-  "workspaces": ["manalab", "example"]
+  "workspaces": ["manalab", "example"],
+  "scripts": {
+    "dev:lib": "cd manalab && bun run dev",
+    "dev:editor": "cd example && bun run manalab",
+    "dev:example": "cd example && bun run dev",
+    "dev": "bun run --parallel dev:lib dev:editor dev:example"
+  }
 }

@@ -2,8 +2,10 @@ import type { Plugin, ViteDevServer } from 'vite'
 import path from 'path'
 import fs from 'fs'
 
+const MAX_BODY_SIZE = 10 * 1024 * 1024 // 10 MB
+
 export function manalabConfigPlugin(projectRoot: string): Plugin {
-  const sceneDataDir = path.resolve(projectRoot, 'scene-data')
+  const sceneDataDir = path.resolve(projectRoot, 'scene-data') + path.sep
 
   return {
     name: 'manalab-config',
@@ -46,7 +48,7 @@ export function manalabConfigPlugin(projectRoot: string): Plugin {
 
           const filePath = path.resolve(sceneDataDir, file)
 
-          // Prevent path traversal
+          // Prevent path traversal (sceneDataDir already has trailing separator)
           if (!filePath.startsWith(sceneDataDir)) {
             res.writeHead(403, { 'Content-Type': 'application/json' })
             res.end(JSON.stringify({ error: 'Invalid path' }))
@@ -72,7 +74,17 @@ export function manalabConfigPlugin(projectRoot: string): Plugin {
         // POST /api/save-layers
         if (req.method === 'POST' && req.url === '/api/save-layers') {
           let body = ''
-          req.on('data', (chunk: Buffer) => { body += chunk.toString() })
+          let size = 0
+          req.on('data', (chunk: Buffer) => {
+            size += chunk.length
+            if (size > MAX_BODY_SIZE) {
+              res.writeHead(413, { 'Content-Type': 'application/json' })
+              res.end(JSON.stringify({ error: 'Payload too large' }))
+              req.destroy()
+              return
+            }
+            body += chunk.toString()
+          })
           req.on('end', () => {
             try {
               const { layers } = JSON.parse(body) as {
@@ -95,9 +107,9 @@ export function manalabConfigPlugin(projectRoot: string): Plugin {
 
               res.writeHead(200, { 'Content-Type': 'application/json' })
               res.end(JSON.stringify({ ok: true }))
-            } catch (err) {
+            } catch {
               res.writeHead(500, { 'Content-Type': 'application/json' })
-              res.end(JSON.stringify({ error: String(err) }))
+              res.end(JSON.stringify({ error: 'Failed to save layers' }))
             }
           })
           return

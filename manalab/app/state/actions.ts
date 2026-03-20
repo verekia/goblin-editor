@@ -36,7 +36,6 @@ export type EditorAction =
   | { type: 'SELECT_ENTITY'; entityId: string | null }
   | { type: 'SELECT_SUB_ITEM'; subItem: SubItemPath | null }
   | { type: 'TOGGLE_STAGE_EDITOR' }
-  | { type: 'TOGGLE_EXPORT_DIALOG' }
   | { type: 'TOGGLE_SUB_ITEM_VISIBILITY'; path: string }
 
   // Stage (undoable)

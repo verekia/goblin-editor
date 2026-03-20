@@ -321,6 +321,7 @@ export default function ThreeViewport({ state, dispatch }: ViewportProps) {
           const entityHash = JSON.stringify(entity)
           if (mesh.userData.entityHash !== entityHash) {
             scene.remove(mesh)
+            disposeMesh(mesh)
             entityMeshMap.delete(entity.id)
             mesh = undefined
           }
@@ -378,6 +379,7 @@ export default function ThreeViewport({ state, dispatch }: ViewportProps) {
     entityMeshMap.forEach((mesh, id) => {
       if (!existingIds.has(id)) {
         scene!.remove(mesh)
+        disposeMesh(mesh)
         entityMeshMap.delete(id)
       }
     })
@@ -549,6 +551,7 @@ function syncSubItems(
           const itemHash = JSON.stringify(items[i])
           if (subMesh.userData.itemHash !== itemHash) {
             sceneObj.remove(subMesh)
+            disposeMesh(subMesh)
             entityMeshMap.delete(compoundKey)
             subMesh = undefined
           }
@@ -590,6 +593,22 @@ function syncSubItems(
   }
 }
 
+function disposeMesh(obj: THREE.Object3D) {
+  obj.traverse((child) => {
+    if (child instanceof THREE.Mesh || child instanceof THREE.LineSegments) {
+      child.geometry?.dispose()
+      if (child.material) {
+        if (Array.isArray(child.material)) child.material.forEach((m) => m.dispose())
+        else child.material.dispose()
+      }
+    }
+    if (child instanceof THREE.Sprite && child.material) {
+      child.material.map?.dispose()
+      child.material.dispose()
+    }
+  })
+}
+
 function updateSelectionHighlight(obj: THREE.Object3D, selected: boolean) {
   // Remove existing highlight
   const toRemove: THREE.Object3D[] = []
@@ -598,7 +617,10 @@ function updateSelectionHighlight(obj: THREE.Object3D, selected: boolean) {
       toRemove.push(child)
     }
   })
-  toRemove.forEach((c) => c.parent?.remove(c))
+  toRemove.forEach((c) => {
+    c.parent?.remove(c)
+    disposeMesh(c)
+  })
 
   if (selected) {
     obj.traverse((child) => {

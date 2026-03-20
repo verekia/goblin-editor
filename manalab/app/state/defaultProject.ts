@@ -45,7 +45,6 @@ export const initialEditorState: EditorState = {
     transformMode: 'translate',
     placementTool: null,
     showStageEditor: false,
-    showExportDialog: false,
     hiddenSubItems: [],
     dirty: false,
   },

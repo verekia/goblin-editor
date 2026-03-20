@@ -291,7 +291,9 @@ export function createEntityMesh(
 
   // gltf / decoration — use placeholder for now (glTF loading is async & optional)
   const assetKey = entity.asset as string
-  const category = assetLibrary['decorations'] || {}
+  const assetRefField = Object.values(layerType.entitySchema).find((f) => f.type === 'assetRef')
+  const categoryKey = assetRefField && 'category' in assetRefField ? assetRefField.category : 'decorations'
+  const category = assetLibrary[categoryKey] || {}
   const assetDef = category[assetKey]
   const label = assetDef?.label || assetKey || 'Unknown'
 

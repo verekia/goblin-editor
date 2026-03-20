@@ -192,8 +192,7 @@ function documentReducer(
       const { layerId, sceneId } = action
       const scene = doc.project.scenes[sceneId]
       if (!scene) return null
-      const { [layerId]: _removed, ...restLayers } = doc.sceneLayers[sceneId] || {}
-      void _removed
+      const { [layerId]: _, ...restLayers } = doc.sceneLayers[sceneId] || {}
       return {
         project: {
           ...doc.project,
@@ -249,8 +248,6 @@ function uiReducer(ui: UIState, action: EditorAction): UIState {
       return { ...ui, selectedSubItem: action.subItem }
     case 'TOGGLE_STAGE_EDITOR':
       return { ...ui, showStageEditor: !ui.showStageEditor }
-    case 'TOGGLE_EXPORT_DIALOG':
-      return { ...ui, showExportDialog: !ui.showExportDialog }
     case 'TOGGLE_SUB_ITEM_VISIBILITY': {
       const path = action.path
       const hidden = ui.hiddenSubItems.includes(path)

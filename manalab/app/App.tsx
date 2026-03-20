@@ -2,7 +2,6 @@ import { useReducer, useEffect, useCallback, useRef, useState } from 'react'
 import { editorReducer } from './state/editorReducer'
 import { initialEditorState } from './state/defaultProject'
 import { generateId } from './lib/idGen'
-import { exportLayerJSON } from './export/exportScene'
 import ThreeViewport from './viewport/ThreeViewport'
 import TopBar from './panels/TopBar'
 import LayerPanel from './panels/LayerPanel'
@@ -10,7 +9,6 @@ import AssetPalette from './panels/AssetPalette'
 import EntityList from './panels/EntityList'
 import InspectorPanel from './panels/InspectorPanel'
 import StageEditor from './panels/StageEditor'
-import ExportDialog from './panels/ExportDialog'
 import type { LayerData } from './state/types'
 import './App.css'
 
@@ -55,8 +53,10 @@ async function saveLayersToDisk(
     for (const layer of sceneDef.layers) {
       const ld = sceneLayers[sceneId]?.[layer.id]
       if (!ld) continue
-      const exported = exportLayerJSON(sceneId, layer.id, layer.type, ld.entities)
-      layers.push({ file: layer.file, data: exported })
+      layers.push({
+        file: layer.file,
+        data: { scene: sceneId, layer: layer.id, type: layer.type, entities: ld.entities },
+      })
     }
   }
 
@@ -172,6 +172,17 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [handleKeyDown])
 
+  // Warn about unsaved changes on tab close
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      if (state.ui.dirty) {
+        e.preventDefault()
+      }
+    }
+    window.addEventListener('beforeunload', handler)
+    return () => window.removeEventListener('beforeunload', handler)
+  }, [state.ui.dirty])
+
   const onResizeStart = useCallback((e: React.MouseEvent) => {
     e.preventDefault()
     draggingRef.current = true
@@ -249,9 +260,6 @@ export default function App() {
         )}
       </div>
 
-      {state.ui.showExportDialog && (
-        <ExportDialog state={state} dispatch={dispatch} />
-      )}
     </div>
   )
 }

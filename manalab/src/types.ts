@@ -193,7 +193,6 @@ export interface UIState {
   transformMode: 'translate' | 'rotate' | 'scale'
   placementTool: PlacementTool
   showStageEditor: boolean
-  showExportDialog: boolean
   hiddenSubItems: string[]
   dirty: boolean
 }
