@@ -12,10 +12,23 @@
     "fmt": "oxfmt .",
     "fmt:check": "oxfmt --check .",
     "lint": "oxlint .",
-    "lint:fix": "oxlint --fix ."
+    "lint:fix": "oxlint --fix .",
+    "typecheck": "bun run --filter '*' typecheck",
+    "warden": "warden",
+    "all": "bun run fmt:check && bun run lint && bun run typecheck && bun run warden"
   },
   "devDependencies": {
+    "@verekia/warden": "0.0.1",
     "oxfmt": "^0.41.0",
     "oxlint": "^1.56.0"
+  },
+  "warden": {
+    "checks": {
+      "typecheckScript": {
+        "modes": {
+          "manalab": "bun-filter-all"
+        }
+      }
+    }
   }
 }
