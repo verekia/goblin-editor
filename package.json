@@ -29,10 +29,6 @@
         "modes": {
           "manalab": "bun-filter-all"
         }
-      },
-      "ciWorkflow": {
-        "file": ".github/workflows/ci.yml",
-        "runs": "bun run all"
       }
     }
   }
