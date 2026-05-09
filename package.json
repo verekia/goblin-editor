@@ -14,7 +14,7 @@
     "lint": "oxlint .",
     "lint:fix": "oxlint --fix .",
     "build": "bun run --filter manalab build",
-    "typecheck": "bun run --filter '*' typecheck",
+    "typecheck": "tsc -b --noEmit",
     "warden": "warden",
     "all": "bun run format:check && bun run lint && bun run typecheck && bun run warden"
   },
@@ -22,14 +22,5 @@
     "@verekia/warden": "0.0.3",
     "oxfmt": "0.48.0",
     "oxlint": "1.63.0"
-  },
-  "warden": {
-    "checks": {
-      "typecheckScript": {
-        "modes": {
-          "manalab": "bun-filter-all"
-        }
-      }
-    }
   }
 }
