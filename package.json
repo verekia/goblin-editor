@@ -9,19 +9,19 @@
     "dev:editor": "cd example && bun run manalab",
     "dev:example": "cd example && bun run dev",
     "dev": "bun run --parallel dev:lib dev:editor dev:example",
-    "fmt": "oxfmt .",
-    "fmt:check": "oxfmt --check .",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check .",
     "lint": "oxlint .",
     "lint:fix": "oxlint --fix .",
     "build": "bun run --filter manalab build",
     "typecheck": "bun run --filter '*' typecheck",
     "warden": "warden",
-    "all": "bun run fmt:check && bun run lint && bun run typecheck && bun run warden"
+    "all": "bun run format:check && bun run lint && bun run typecheck && bun run warden"
   },
   "devDependencies": {
-    "@verekia/warden": "0.0.1",
-    "oxfmt": "^0.41.0",
-    "oxlint": "^1.56.0"
+    "@verekia/warden": "0.0.3",
+    "oxfmt": "0.48.0",
+    "oxlint": "1.63.0"
   },
   "warden": {
     "checks": {
