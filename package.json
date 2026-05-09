@@ -13,6 +13,7 @@
     "fmt:check": "oxfmt --check .",
     "lint": "oxlint .",
     "lint:fix": "oxlint --fix .",
+    "build": "bun run --filter manalab build",
     "typecheck": "bun run --filter '*' typecheck",
     "warden": "warden",
     "all": "bun run fmt:check && bun run lint && bun run typecheck && bun run warden"
