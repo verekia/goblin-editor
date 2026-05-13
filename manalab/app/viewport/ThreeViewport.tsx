@@ -106,6 +106,11 @@ export default function ThreeViewport({ state, dispatch }: ViewportProps) {
             scale: scl,
           })
         }
+
+        // In blender mode, deactivate transform after completing a drag
+        if (s.present.project.blenderMode) {
+          dispatchRef.current({ type: 'SET_TRANSFORM_MODE', mode: null })
+        }
       }
     })
 
@@ -394,7 +399,7 @@ export default function ThreeViewport({ state, dispatch }: ViewportProps) {
     })
 
     // Attach transform controls to selected entity or sub-item
-    if (s.ui.selectedEntityId && transformControls) {
+    if (s.ui.selectedEntityId && s.ui.transformMode && transformControls) {
       let targetMesh: THREE.Object3D | undefined
       if (s.ui.selectedSubItem && s.ui.selectedSubItem.length > 0) {
         const subKey =
@@ -412,14 +417,15 @@ export default function ThreeViewport({ state, dispatch }: ViewportProps) {
         if (s.ui.selectedSubItem) {
           transformControls.setMode('translate')
         } else {
-          transformControls.setMode(
-            s.ui.transformMode === 'translate'
-              ? 'translate'
-              : s.ui.transformMode === 'rotate'
-                ? 'rotate'
-                : 'scale',
-          )
+          transformControls.setMode(s.ui.transformMode)
         }
+
+        // Apply axis constraint
+        const c = s.ui.axisConstraint
+        transformControls.showX = !c || c === 'X' || c === 'XY' || c === 'XZ'
+        transformControls.showY = !c || c === 'Y' || c === 'XY' || c === 'YZ'
+        transformControls.showZ = !c || c === 'Z' || c === 'XZ' || c === 'YZ'
+
         transformControls.getHelper().visible = true
       } else {
         transformControls.detach()

@@ -159,6 +159,7 @@ export interface SceneDef {
 // ── Editor project file (editor.json) ────────────────────
 export interface EditorProject {
   version: number
+  blenderMode?: boolean
   assetLibrary: Record<string, AssetCategory>
   scenes: Record<string, SceneDef>
   layerTypes: Record<string, LayerTypeDef>
@@ -185,12 +186,15 @@ export type PlacementTool =
   | null
 
 // ── UI state ─────────────────────────────────────────────
+export type AxisConstraint = 'X' | 'Y' | 'Z' | 'YZ' | 'XZ' | 'XY' | null
+
 export interface UIState {
   currentSceneId: string
   activeLayerId: string
   selectedEntityId: string | null
   selectedSubItem: SubItemPath | null
-  transformMode: 'translate' | 'rotate' | 'scale'
+  transformMode: 'translate' | 'rotate' | 'scale' | null
+  axisConstraint: AxisConstraint
   placementTool: PlacementTool
   showStageEditor: boolean
   hiddenSubItems: string[]

@@ -10,6 +10,14 @@ interface TopBarProps {
 export default function TopBar({ state, dispatch, onSave }: TopBarProps) {
   const { ui, past, future, present } = state
   const scenes = Object.entries(present.project.scenes)
+  const blender = present.project.blenderMode
+
+  const setMode = (mode: 'translate' | 'rotate' | 'scale') => {
+    dispatch({
+      type: 'SET_TRANSFORM_MODE',
+      mode: blender && ui.transformMode === mode ? null : mode,
+    })
+  }
 
   return (
     <div className="topbar">
@@ -35,26 +43,28 @@ export default function TopBar({ state, dispatch, onSave }: TopBarProps) {
       <div className="topbar-group">
         <button
           className={`topbar-btn ${ui.transformMode === 'translate' ? 'active' : ''}`}
-          onClick={() => dispatch({ type: 'SET_TRANSFORM_MODE', mode: 'translate' })}
-          title="Translate (W)"
+          onClick={() => setMode('translate')}
+          title="Grab / Translate (G)"
         >
-          W Move
+          G Move
         </button>
         <button
           className={`topbar-btn ${ui.transformMode === 'rotate' ? 'active' : ''}`}
-          onClick={() => dispatch({ type: 'SET_TRANSFORM_MODE', mode: 'rotate' })}
-          title="Rotate (E)"
+          onClick={() => setMode('rotate')}
+          title="Rotate (R)"
         >
-          E Rot
+          R Rot
         </button>
         <button
           className={`topbar-btn ${ui.transformMode === 'scale' ? 'active' : ''}`}
-          onClick={() => dispatch({ type: 'SET_TRANSFORM_MODE', mode: 'scale' })}
-          title="Scale (R)"
+          onClick={() => setMode('scale')}
+          title="Scale (S)"
         >
-          R Scl
+          S Scl
         </button>
       </div>
+
+      {ui.axisConstraint && <span className="topbar-constraint">Axis: {ui.axisConstraint}</span>}
 
       <div className="topbar-separator" />
 

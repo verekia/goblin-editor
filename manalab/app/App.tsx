@@ -108,6 +108,7 @@ export default function App() {
   }, [state.present.project, state.present.sceneLayers])
 
   // Keyboard shortcuts
+  const blenderMode = state.present.project.blenderMode
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       // Ignore when typing in an input
@@ -116,22 +117,39 @@ export default function App() {
 
       const ctrl = e.ctrlKey || e.metaKey
 
-      if (ctrl && (e.key === 's' || e.key === 'S')) {
+      const key = e.key.toLowerCase()
+
+      if (ctrl && key === 's') {
         e.preventDefault()
         handleSave()
-      } else if (ctrl && e.key === 'z' && !e.shiftKey) {
+      } else if (ctrl && key === 'z' && !e.shiftKey) {
         e.preventDefault()
         dispatch({ type: 'UNDO' })
-      } else if (ctrl && (e.key === 'Z' || (e.key === 'z' && e.shiftKey) || e.key === 'y')) {
+      } else if (ctrl && ((key === 'z' && e.shiftKey) || key === 'y')) {
         e.preventDefault()
         dispatch({ type: 'REDO' })
-      } else if (e.key === 'w' || e.key === 'W') {
+      } else if (key === 'g' && !ctrl) {
         dispatch({ type: 'SET_TRANSFORM_MODE', mode: 'translate' })
-      } else if (e.key === 'e' || e.key === 'E') {
+      } else if (key === 'r' && !ctrl) {
         dispatch({ type: 'SET_TRANSFORM_MODE', mode: 'rotate' })
-      } else if (e.key === 'r' || e.key === 'R') {
+      } else if (key === 's' && !ctrl) {
         dispatch({ type: 'SET_TRANSFORM_MODE', mode: 'scale' })
-      } else if (e.key === 'Delete' || e.key === 'Backspace') {
+      } else if (key === 'x' && !ctrl && state.ui.selectedEntityId && state.ui.transformMode) {
+        dispatch({
+          type: 'SET_AXIS_CONSTRAINT',
+          constraint: e.shiftKey ? 'YZ' : 'X',
+        })
+      } else if (key === 'y' && !ctrl && state.ui.selectedEntityId && state.ui.transformMode) {
+        dispatch({
+          type: 'SET_AXIS_CONSTRAINT',
+          constraint: e.shiftKey ? 'XZ' : 'Y',
+        })
+      } else if (key === 'z' && !ctrl && state.ui.selectedEntityId && state.ui.transformMode) {
+        dispatch({
+          type: 'SET_AXIS_CONSTRAINT',
+          constraint: e.shiftKey ? 'XY' : 'Z',
+        })
+      } else if (key === 'delete' || key === 'backspace') {
         if (state.ui.selectedEntityId) {
           dispatch({
             type: 'DELETE_ENTITY',
@@ -141,13 +159,17 @@ export default function App() {
           })
           dispatch({ type: 'SELECT_ENTITY', entityId: null })
         }
-      } else if (e.key === 'Escape') {
-        if (state.ui.placementTool) {
+      } else if (key === 'escape') {
+        if (state.ui.axisConstraint) {
+          dispatch({ type: 'SET_AXIS_CONSTRAINT', constraint: null })
+        } else if (blenderMode && state.ui.transformMode) {
+          dispatch({ type: 'SET_TRANSFORM_MODE', mode: null })
+        } else if (state.ui.placementTool) {
           dispatch({ type: 'SET_PLACEMENT_TOOL', tool: null })
         } else {
           dispatch({ type: 'SELECT_ENTITY', entityId: null })
         }
-      } else if (ctrl && (e.key === 'd' || e.key === 'D')) {
+      } else if (ctrl && key === 'd') {
         e.preventDefault()
         if (state.ui.selectedEntityId) {
           const newId = generateId()
@@ -160,7 +182,7 @@ export default function App() {
           })
           dispatch({ type: 'SELECT_ENTITY', entityId: newId })
         }
-      } else if (e.key === 'f' || e.key === 'F') {
+      } else if (key === 'f' && !ctrl) {
         if (state.ui.selectedEntityId) {
           window.dispatchEvent(
             new CustomEvent('focus-entity', { detail: state.ui.selectedEntityId }),
@@ -168,7 +190,7 @@ export default function App() {
         }
       }
     },
-    [state.ui, handleSave],
+    [state.ui, handleSave, blenderMode],
   )
 
   useEffect(() => {
@@ -255,7 +277,10 @@ export default function App() {
 
       <div className="status-bar">
         <span>Entities: {entityCount}</span>
-        <span>Mode: {state.ui.transformMode}</span>
+        <span>
+          Mode: {state.ui.transformMode ?? 'none'}
+          {state.ui.axisConstraint && ` [${state.ui.axisConstraint}]`}
+        </span>
         {state.ui.placementTool && (
           <span>
             Placing:{' '}

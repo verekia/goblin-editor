@@ -252,7 +252,9 @@ function uiReducer(ui: UIState, action: EditorAction): UIState {
         placementTool: null,
       }
     case 'SET_TRANSFORM_MODE':
-      return { ...ui, transformMode: action.mode }
+      return { ...ui, transformMode: action.mode, axisConstraint: null }
+    case 'SET_AXIS_CONSTRAINT':
+      return { ...ui, axisConstraint: action.constraint }
     case 'SET_PLACEMENT_TOOL':
       return { ...ui, placementTool: action.tool, selectedEntityId: null, selectedSubItem: null }
     case 'SELECT_ENTITY':

@@ -1,4 +1,13 @@
-import { Vec3, PlacementTool, Entity, StageConfig, LayerRef, LayerData, SubItemPath } from './types'
+import {
+  Vec3,
+  PlacementTool,
+  Entity,
+  StageConfig,
+  LayerRef,
+  LayerData,
+  SubItemPath,
+  AxisConstraint,
+} from './types'
 
 // ── Action types ─────────────────────────────────────────
 export type EditorAction =
@@ -53,7 +62,8 @@ export type EditorAction =
     }
 
   // UI (non-undoable)
-  | { type: 'SET_TRANSFORM_MODE'; mode: 'translate' | 'rotate' | 'scale' }
+  | { type: 'SET_TRANSFORM_MODE'; mode: 'translate' | 'rotate' | 'scale' | null }
+  | { type: 'SET_AXIS_CONSTRAINT'; constraint: AxisConstraint }
   | { type: 'SET_PLACEMENT_TOOL'; tool: PlacementTool }
   | { type: 'SELECT_ENTITY'; entityId: string | null }
   | { type: 'SELECT_SUB_ITEM'; subItem: SubItemPath | null }
